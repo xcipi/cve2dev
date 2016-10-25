@@ -12,26 +12,12 @@ import requests
 import json
 from pprint import pprint
 import get_token
-import get_csas
-import yaml
+import get_cves
 
-print 'Parsing configs ...'
-with open("config.yaml", 'r') as yamlfile:
-    cfg = yaml.load(yamlfile)
+clientID = 'zetgk3mrfy58nwvbe239tqtr'
+clientSecret = 'JkSydPCAnS28M82dKXG94RfY'
 
-for section in cfg:
-    clientId = cfg['CiscoCreds']['clientId']
-    clientSecret = cfg['CiscoCreds']['clientSecret']
-print 'done ...'
+ciscoToken = get_token.get_token(clientID, clientSecret)
 
-#clientID = 'zetgk3mrfy58nwvbe239tqtr'
-#clientSecret = 'JkSydPCAnS28M82dKXG94RfY'
-
-ciscoToken = get_token.get_token(clientId, clientSecret)
-
-#print clientId
-#print clientSecret
-
-print 'Getting CSAs ...'
-get_csas.get_csas(ciscoToken,'LATEST','5')
-print 'done getting CSAs ...'        
+get_cves.get_cves(ciscoToken)
+        
