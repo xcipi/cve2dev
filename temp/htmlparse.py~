@@ -1,0 +1,44 @@
+from html.parser import HTMLParser
+import wget
+import re
+
+
+# create a subclass and override the handler methods
+class MyHTMLParser(HTMLParser):
+
+
+#    def handle_starttag(self, tag, attrs):
+#        print(("Encountered a start tag:"), tag)
+#
+#    def handle_endtag(self, tag):
+#        print(("Encountered an end tag :"), tag)
+
+    def handle_data(self, data):
+        F5regex = r"\n +"
+        replace = ''
+        a = ['support.f5.com', 'sol']
+        
+        if all(x in data for x in a):
+#            print ('Povodne data: ', data)
+            try:
+                matchUrl = re.sub(F5regex, replace, data, 0)
+            except Exception as e:
+                print(e)    
+    
+#            print ('Po regexpe: ', matchUrl)
+            print ('#########################')
+                f = wget.download(matchUrl)
+            print ('- Downloaded file: ', matchUrl)
+
+# instantiate the parser and fed it some HTML
+parser = MyHTMLParser()
+f = open('test.html','r')
+
+parser.feed(f.read())
+
+
+
+
+
+#if any(ext in url_string for ext in extensionsToCheck):
+#    print(url_string)

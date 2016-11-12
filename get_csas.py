@@ -10,12 +10,10 @@ get CVE database from Cisco API
 
 import requests
 import json
-import urllib
 import datetime
-import wget
-import get_cves
+import write_csa
 
-def get_csas(ciscoToken,csaParam,csaParamValue):
+def get_csas(ciscoToken,csaParam,csaParamValue,bendType):
     """
     get_csas
     
@@ -51,48 +49,18 @@ def get_csas(ciscoToken,csaParam,csaParamValue):
     elif csaParam == 'LATEST':
        csaUrl = csaBaseUrl + csaUrlLatest + csaParamValue
 
-#    csaUrl = csaBaseUrl + csaUrlLatest + csaParamValue
-
-    print 'Getting CSA JSON ...'
+    print ('Getting CSA JSON ... from ' + csaUrl)
     csaHeaders = {'Accept': 'application/json', 'Authorization': ciscoTokenHeader}
 
     csaResponse = requests.get(csaUrl, headers = csaHeaders)
 
-    print 'Writting CSA CSV file ...'
-    if (csaResponse.ok):
-        csaContent = json.loads(csaResponse.content)
 
-        csvFile = open("./REPORTS/" + date + ".csv",'wb')
-        
-#        print "sir;cvrfUrl;lastUpdated;firstPublished;advisoryId;CVE list"     
-        csvFile.write("sir;cvrfUrl;lastUpdated;firstPublished;advisoryId;CVE list")
-        
+    if bendType == 'DB':
+        write_csa.write_csa_to_db(csaResponse)
+    elif bendType == 'CSV':
+        write_csa.write_csa_to_csv(csaResponse)
+    
 
-        
-        for line in csaContent["advisories"]:
-            print 'Getting CSA XML description file for ' + line ['advisoryId']
-#            csaFile = wget.download(csaUrl)            
-            csaFile = open("./CSAs/" + line["advisoryId"] + ".xml",'wb')
-            csaFile.write(requests.get(line["cvrfUrl"]).content)
-            csaFile.close()
-                    
-            cve_list = ""
-            for cve in line["cves"]:
-                print 'ToDo: Download description for ' + cve + ' ...'
-                print get_cves.get.cve(cve)
-                if cve_list == "":
-                    cve_list = cve
-                else:
-                    cve_list = cve_list + ", " + cve
-        
-            report = line["sir"] + ";" + line["advisoryId"] + ";" + line["lastUpdated"] + ";" + line["firstPublished"] + ";" + cve_list + ";" + line["cvrfUrl"]
-
-
-#            print report        
-            csvFile.write("\n" + report)
-            
-        csvFile.close()
-            
 #	FUNKCNY download CSA files - NEMAZAT !!!
 
 #            csaFile = open("./CSAs/" + line["advisoryId"] + ".xml",'wb')
