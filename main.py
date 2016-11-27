@@ -42,3 +42,12 @@ get_csas.get_csas(ciscoToken,'LATEST','5',bendType)
 print ('### Done getting CSAs ...')
 #read_csadb()
 print ('--- LEAVING main() ...')
+import get_cves
+
+clientID = 'zetgk3mrfy58nwvbe239tqtr'
+clientSecret = 'JkSydPCAnS28M82dKXG94RfY'
+
+ciscoToken = get_token.get_token(clientID, clientSecret)
+
+get_cves.get_cves(ciscoToken)
+        
