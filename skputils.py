@@ -60,7 +60,7 @@ def insert_csa(csaRecord,csaCveList):
     except Exception as e:  
         print ('INSERT ERROR')
         print (e)
-    print ('--- LEAVING get_url_content() ...')
+    print ('--- LEAVING insert_csa() ...')
 
 # function to read ALL records from mongo db    
 def read_csadb():

@@ -320,12 +320,12 @@ def print_node(node, strip_ns):
 #    sys.exit(0)
 
 def parse_cvrf_recursive(element,precede):
-#    precede = precede + chop_ns_prefix(element.tag) + ' || '
+    precede = precede + ' '
     for child in element:
         attr = ''
         if child.attrib:
             attr = child.attrib
-        print ('{ \'tag\':\'', chop_ns_prefix(child.tag), '\', \'attribs\': ', attr, ', \'text\': \'', child.text, '\', \'subtags\': ', parse_cvrf_recursive(child,precede))
+        print (precede, '{ \'tag\':\'', chop_ns_prefix(child.tag), '\', \'attribs\': ', attr, ', \'text\': \'', child.text, '\', \'subtags\': ', parse_cvrf_recursive(child,precede), '}')
 #        print (str(precede) + chop_ns_prefix(child.tag), '> ATTRIBS: ', attr, ' > TEXT: ', child.text.strip())
 #        parse_cvrf_recursive(child,precede)
         
