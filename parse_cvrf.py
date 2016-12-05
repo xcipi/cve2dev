@@ -16,7 +16,7 @@ import sys
 import urllib.request
 import argparse
 from lxml import etree
-
+import anytree
 
 #class CVRF_Syntax(object):
 #    """
@@ -68,6 +68,16 @@ from lxml import etree
 #    return type("Prepend_%s" % namespace, (PrependerAction,),
 #                {"prepend_text": CVRF_Syntax.NAMESPACES[namespace]})
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def chop_ns_prefix(element):
     """
@@ -319,13 +329,20 @@ def print_node(node, strip_ns):
 #        sys.exit("%s: %s: %s" % (progname, exc_type.__name__, exc_value))
 #    sys.exit(0)
 
-def parse_cvrf_recursive(element,precede):
-    precede = precede + ' '
+def parse_cvrf_recursive(element,precede,order,precedessor):
+#    precede = precede + '\t'
+
     for child in element:
         attr = ''
+#        if (order == 0):
         if child.attrib:
             attr = child.attrib
-        print (precede, '{ \'tag\':\'', chop_ns_prefix(child.tag), '\', \'attribs\': ', attr, ', \'text\': \'', child.text, '\', \'subtags\': ', parse_cvrf_recursive(child,precede), '}')
+###        print ('### ', order+1, ' LEVEL ### ', precede, '{ \'tag\':\'', chop_ns_prefix(child.tag), '\', \'attribs\': ', attr, ', \'text\': \'', child.text, '\', \'subtags\': ', parse_cvrf_recursive(child,precede,order+1,child.tag), '}')
+#        print (precede,bcolors.WARNING, '\t parent:', bcolors.ENDC, precedessor.strip(' '), bcolors.WARNING, '; element:', bcolors.ENDC, chop_ns_prefix(child.tag), bcolors.WARNING, '; attributes:', bcolors.ENDC, attr)
+        print_node(child,1)
+        parse_cvrf_recursive(child,precede + '\t',order+1,chop_ns_prefix(child.tag))
+
+
 #        print (str(precede) + chop_ns_prefix(child.tag), '> ATTRIBS: ', attr, ' > TEXT: ', child.text.strip())
 #        parse_cvrf_recursive(child,precede)
         
@@ -334,8 +351,8 @@ def main():
 
     CvrfTree = etree.parse('CSAs/cisco-sa-20160927-openssl_cvrf.xml')
     CvrfRoot = CvrfTree.getroot()
-
-    parse_cvrf_recursive(CvrfRoot,'')
+ 
+    parse_cvrf_recursive(CvrfRoot,'',0,chop_ns_prefix(CvrfRoot.tag))
  
 
 '''
